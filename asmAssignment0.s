@@ -11,28 +11,23 @@ do_Str:                        		; do_Str function definition - functions are de
         mov ecx, dword [ebp+8]		; get function argument on stack
 				                	; now ecx register points to the input string
 	yourCode:           			; use label to build a loop for treating the input string characters
-	    bltu ecx, 'a', nonLower
-        bgtu ecx, 'z', nonABC
-        inc an
-
+		cmp byte [ecx], 'a';
+		jb nonLower;
+	        cmp byte [ecx], 'z';
+		jg nonABC;
+		sub byte [ecx], 0x20;
+		jmp ABC
 	nonLower:
-        bltu ecx, 'A', nonABC
-        bgtu ecx, 'Z', nonUpper
-        inc an
-        j ABC
-
-
+		cmp byte [ecx], 'A';
+		jb nonABC;
+		cmp byte [ecx], 'Z';
+		ja nonABC;
 	ABC:
-	    add [ecx], 32
-
+		inc word [an];
 	nonABC:
-
-		; your code goes here...
-
 		inc ecx      	    	; increment ecx value; now ecx points to the next character of the string
 		cmp byte [ecx], 0   	; check if the next character (character = byte) is zero (i.e. null string termination)
 		jnz yourCode      	; if not, keep looping until meet null termination character
-
         popad                    	; restore all previously used registers
         mov eax,[an]         		; return an (returned values are in eax)
         mov esp, ebp			; free function activation frame
